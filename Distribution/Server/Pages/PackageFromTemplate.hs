@@ -328,8 +328,6 @@ candidatesPageTemplate cands candidates candidatesCore=
                 -- accomponaying definition of packageSynposis. Changed back for now.
                 let desc = packageDescription . pkgDesc . candPkgInfo $ last pkgs
                     pkgname = packageName desc
-                    -- candidates     = candidatesResource
-                    -- candidatesCore = candidatesCoreResource
                 in  [ anchor ! [href $ packageCandidatesUri candidates "" pkgname ] << display pkgname
                     , toHtml ": "
                     , toHtml $ intersperse (toHtml ", ") $ flip map pkgs $ \pkg ->

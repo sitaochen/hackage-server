@@ -1,24 +1,49 @@
+{-# LANGUAGE RecordWildCards #-}
 -- Body of the HTML page for a package
 module Distribution.Server.Pages.Group (
     groupPage,
-    renderGroupName
+    renderGroupName,
+    renderGroupNameWithCands
   ) where
 
 import Text.XHtml.Strict
 import System.FilePath.Posix ((</>))
 import Distribution.Server.Pages.Template (hackagePage)
 import qualified Distribution.Server.Users.Types as Users
+import Distribution.Server.Features.Core
+import Distribution.Server.Features.PackageCandidates
 import Distribution.Server.Users.Group (GroupDescription(..))
+-- import Distribution.Types.PackageName (mkPackageName)
+import Distribution.Package
+-- import qualified Distribution.Server.Packages.PackageIndex as PackageIndex
 import qualified Distribution.Server.Users.Group as Group
 import Distribution.Text
 import Data.Maybe
+import Data.List (intersperse)
+
+renderGroupNameWithCands :: GroupDescription -> Maybe String -> [CandPkgInfo] -> CoreResource -> Html
+renderGroupNameWithCands desc murl pkgs candidates =
+    maybeUrl (groupTitle desc) murl
+      +++
+    maybe noHtml (\(for, mfor) -> " for " +++ maybeUrl for mfor) (groupEntity desc)
+      +++
+    -- (" : " +++ maybeCandidates pkgs )
+    maybeCandidates pkgs
+  where 
+    maybeUrl text = maybe (toHtml text) (\url -> anchor ! [href url] << text)
+    maybeCandidates candpkgs = 
+        case candpkgs of
+          [] -> noHtml
+          _  -> " : " +++ (toHtml $ intersperse (toHtml ", ")  $ flip map candpkgs $ \pkg -> anchor ! [href $ corePackageIdUri candidates "" $ packageId pkg] << display (packageVersion pkg))
 
 renderGroupName :: GroupDescription -> Maybe String -> Html
 renderGroupName desc murl =
     maybeUrl (groupTitle desc) murl
       +++
     maybe noHtml (\(for, mfor) -> " for " +++ maybeUrl for mfor) (groupEntity desc)
-  where maybeUrl text = maybe (toHtml text) (\url -> anchor ! [href url] << text)
+  where
+    maybeUrl text = maybe (toHtml text) (\url -> anchor ! [href url] << text)
+
 
 -- Primitive access control: the URI to post a new user request to, or the the URI/user/<username> to DELETE
 -- if neither adding or removing is enabled, a link to a URI/edit page is provided

@@ -42,7 +42,8 @@ import Distribution.Server.Packages.Types
 import Distribution.Server.Packages.Render
 import qualified Distribution.Server.Users.Users as Users
 import qualified Distribution.Server.Packages.PackageIndex as PackageIndex
-import Distribution.Server.Users.Group (UserGroup(..))
+import Distribution.Server.Users.Group (UserGroup(..), GroupDescription(..))
+import Distribution.Types.PackageName (mkPackageName)
 -- [reverse index disabled] import Distribution.Server.Packages.Reverse
 
 import qualified Distribution.Server.Pages.Package as Pages
@@ -288,7 +289,7 @@ htmlFeature env@ServerEnv{..}
                                       cacheBrowseTable
                                       templates
                                       names
-    htmlUsers      = mkHtmlUsers      user usersdetails
+    htmlUsers      = mkHtmlUsers      user usersdetails candidates
     htmlUploads    = mkHtmlUploads    utilities upload
     htmlDocUploads = mkHtmlDocUploads utilities core docsCore templates
     htmlDownloads  = mkHtmlDownloads  utilities download
@@ -746,10 +747,11 @@ data HtmlUsers = HtmlUsers {
     htmlUsersResources :: [Resource]
   }
 
-mkHtmlUsers :: UserFeature -> UserDetailsFeature -> HtmlUsers
-mkHtmlUsers UserFeature{..} UserDetailsFeature{..} = HtmlUsers{..}
+mkHtmlUsers :: UserFeature -> UserDetailsFeature -> PackageCandidatesFeature -> HtmlUsers
+mkHtmlUsers UserFeature{..} UserDetailsFeature{..} PackageCandidatesFeature{..}= HtmlUsers{..}
   where
     users = userResource
+    candidatesCore = candidatesCoreResource
 
     htmlUsersResources = [
         -- list of users with user links; if admin, a link to add user page
@@ -797,7 +799,11 @@ mkHtmlUsers UserFeature{..} UserDetailsFeature{..} = HtmlUsers{..}
       uris     <- getGroupIndex uid
       uriPairs <- forM uris $ \uri -> do
           desc <- getIndexDesc uri
-          return $ Pages.renderGroupName desc (Just uri)
+          case groupEntity desc of
+            Nothing      -> return $ Pages.renderGroupNameWithCands desc (Just uri) [] candidatesCore
+            Just (for,_) -> do
+                pkgs <- lookupCandidateName $ mkPackageName for
+                return $ Pages.renderGroupNameWithCands desc (Just uri) pkgs candidatesCore
       return $ toResponse $ Resource.XHtml $ hackagePage realname
         [ h2 << realname
         , case uriPairs of

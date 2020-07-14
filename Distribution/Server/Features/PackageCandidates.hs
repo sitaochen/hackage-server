@@ -390,6 +390,7 @@ candidatesFeature ServerEnv{serverBlobStore = store}
         void $ updateState candidatesState $ AddCandidate candidate
         let group = maintainersGroup (packageName pkgid)
         liftIO $ Group.addUserToGroup group uid
+        runHook_ groupChangedHook (Group.groupDesc group, True,uid,uid,"initial upload")
         return candidate
 
     -- | Helper function for uploadCandidate.
