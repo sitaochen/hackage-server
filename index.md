@@ -1,37 +1,16 @@
-## Welcome to GitHub Pages
+## GSoC 2020 Project Summary
 
-You can use the [editor on GitHub](https://github.com/sitaochen/hackage-server/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Finish the package candidate workflow for Hackage and improved UI and candidate workflow for Hackage.
+[GSoC branch](https://github.com/haskell/hackage-server/compare/sc/gsoc20)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Things that done
 
-### Markdown
+- [Convert candidate page to use templating engine and delete candiates when published](https://github.com/haskell/hackage-server/pull/885)
+- [Added publish button on candidate page and show a link to the candidate packages available from the main package](https://github.com/haskell/hackage-server/commit/3f2c30ce5614406965994942f5c63d6305870ae4)
+- [Added candidate link on user page](https://github.com/haskell/hackage-server/commit/3f2c30ce5614406965994942f5c63d6305870ae4)
+- [Added delete all candidates button on candidates page](https://github.com/haskell/hackage-server/commit/6c327990296dcdfc200b42bf88ed49908dfc1936)
+- [Expose Web UI for packagae candidates documentation](https://github.com/haskell/hackage-server/commit/483aaf6316c5fa8db4d8ea5d7d086aefb45f7fd0)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/sitaochen/hackage-server/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+### Ongoing
+- Relative links in candidate view use wrong base
+- Generate Package Candidates Index
